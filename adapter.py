@@ -90,30 +90,8 @@ class CustomJsonAPI(Adapter):
         query_args = _parse_query_args(query_string)
         # import pdb;pdb.set_trace()
         # calendar_month_year_str = query_string.get("calendar_month_year_str")[0]
-        # Here we are targetting postId to be filterable
-        return (parsed.path, query_args)
-
-    # @staticmethod
-    # def parse_uri(uri: str):
-    #     return uri
-
-    # def __init__(self, uri: str):
-    #     """
-    #     Instantiate the adapter.
-
-    #     Here ``uri`` will be passed from the ``parse_uri`` method
-    #     """
-    #     super().__init__()
-
-    #     parsed = urllib.parse.urlparse(uri)
-    #     query_string = urllib.parse.parse_qs(parsed.query)
-
-    #     self.postId = query_string["postId"][0]
-    #     self._session = requests_cache.CachedSession(
-    #         cache_name="jsonplaceholders_cache",
-    #         backend="sqlite",
-    #         expire_after=180,
-    #         )
+        # Here we are targeting postId to be filterable
+        return parsed.path, query_args
 
     def get_data(
             self,
@@ -121,22 +99,10 @@ class CustomJsonAPI(Adapter):
             order,
             **kwargs,
     ):
-        # url = "https://jsonplaceholder.typicode.com/comments"
-        # params = {"calendar_month_year_str": self.calendar_month_year_str}
-        # response = self._session.get(url, params=params)
-        # if response.ok:
-        #     return response.json()
-
         url = "http://3.108.177.44:9090/filter-service/v1/analytics/filter-param-rawquery"
-
-        print("***************",self.query_args);
-
         payload = self.query_args
         headers = {"Content-Type": "application/json"}
-
         response = requests.request("POST", url, json=payload, headers=headers)
-
-        # print(response.text)
         return response.json()['reportData']
 
     def _set_columns(self):
