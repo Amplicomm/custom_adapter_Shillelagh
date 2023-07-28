@@ -1,6 +1,5 @@
 import urllib
-from json import dump, dumps
-from typing import Dict, List, Union, Tuple
+from typing import Dict, List, Union
 from urllib import parse
 from urllib.parse import urlparse, parse_qs
 
@@ -13,20 +12,29 @@ QueryArg = Union[str, int]
 
 
 def _parse_query_arg(k: str, v: List[str]) -> [str, [str, str]]:
+    """
+    Key Value parsing method for desired output
+    :param k:
+    :param v:
+    :return:
+    """
     if len(v) > 1:
         raise ValueError(f"{k} was specified {len(v)} times")
     else:
-        key_name_info = k.split('%')
-        # print(key_name_info)
-        if len(key_name_info) == 1:
-            # return $ string, property name, value
-            return '$', [key_name_info[0], v[0]]
-        elif len(key_name_info) == 2:
-            # return parent property name, property name, value
-            return key_name_info[0], [key_name_info[1], v[0]]
+        if len(k):
+            key_name_info = k.split('%')
+            # print(key_name_info)
+            if len(key_name_info) == 1:
+                # return $ string, property name, value
+                return '$', [key_name_info[0], v[0]]
+            elif len(key_name_info) == 2:
+                # return parent property name, property name, value
+                return key_name_info[0], [key_name_info[1], v[0]]
+            else:
+                # TODO: Check the Different edge cases
+                raise ValueError(f"{k} query format error")
         else:
-            # TODO: Check the Different edge cases
-            raise ValueError(f"{k} query format error")
+            raise ValueError("Empty string passed")
 
 
 def _parse_query_args(query: Dict[str, List[str]]) -> Dict[str, QueryArg]:
